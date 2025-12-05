@@ -50,8 +50,6 @@ interface SpeechRecognitionInstance extends EventTarget {
 
 declare global {
   interface Window {
-    SpeechRecognition: new () => SpeechRecognitionInstance;
-    webkitSpeechRecognition: new () => SpeechRecognitionInstance;
     puter?: {
       ai?: {
         txt2speech?: (
@@ -983,7 +981,8 @@ export default function ChatPage() {
     }
 
     const SpeechRecognitionAPI =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
     if (!SpeechRecognitionAPI) {
       showToast(
         "🎤 La reconnaissance vocale n'est pas supportée par ce navigateur."
@@ -992,7 +991,8 @@ export default function ChatPage() {
     }
 
     try {
-      const recognition = new SpeechRecognitionAPI();
+      const recognition =
+        new SpeechRecognitionAPI() as SpeechRecognitionInstance;
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = "fr-FR";
